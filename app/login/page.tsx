@@ -1,17 +1,19 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Navigation } from "@/components/navigation"
+// Navigation is rendered by the layout (server-side)
 import { Footer } from "@/components/footer"
 import { Eye, EyeOff, Mail, Lock } from "lucide-react"
 import Link from "next/link"
 
 export default function LoginPage() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -52,14 +54,32 @@ export default function LoginPage() {
     if (validateForm()) {
       // Handle form submission here
       console.log("Form submitted:", formData)
-      // You can add API call here to authenticate the user
-      alert("Login successful!")
+      // Call server login API which will set a server-side session cookie (mock)
+      fetch('/api/auth/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email.toLowerCase() })
+      })
+        .then(res => res.json())
+        .then((data) => {
+          if (data && data.ok) {
+            // Perform a full reload to ensure the server reads the session cookie
+            // and renders the layout with the authenticated user.
+            window.location.href = '/'
+          } else {
+            alert(data?.error || 'Login failed')
+          }
+        })
+        .catch((err) => {
+          console.error(err)
+          alert('Login error')
+        })
     }
   }
 
   return (
     <>
-      <Navigation />
       <div className="min-h-screen bg-gradient-to-br from-primary/5 to-accent/5 py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-md mx-auto">

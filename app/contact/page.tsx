@@ -178,7 +178,6 @@ export default function ContactPage() {
 
   return (
     <>
-      <Navigation />
       <div className="flex-1">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-primary/5 to-accent/5 py-20 lg:py-32">

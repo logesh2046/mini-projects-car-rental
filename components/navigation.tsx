@@ -54,6 +54,9 @@ export function Navigation({ user }: NavigationProps) {
     }
   }, [])
 
+  // `user` should be passed from the server layout (server component)
+  const currentUser = user ?? null
+
   const navItems = [
     { href: "/", label: "Home", icon: Home },
     { href: "/cars", label: "Cars", icon: Car },
@@ -88,8 +91,8 @@ export function Navigation({ user }: NavigationProps) {
   }
 
   const getUserMenuItems = () => {
-    if (!user) return []
-    return user.role === "admin" ? adminMenuItems : customerMenuItems
+    if (!currentUser) return []
+    return currentUser.role === "admin" ? adminMenuItems : customerMenuItems
   }
 
   return (
@@ -122,7 +125,7 @@ export function Navigation({ user }: NavigationProps) {
 
           {/* Desktop Auth */}
           <div className="hidden md:flex items-center space-x-4">
-            {user ? (
+            {currentUser ? (
               <>
                 <Button variant="outline" size="sm">
                   <Bell className="h-4 w-4" />
@@ -137,16 +140,16 @@ export function Navigation({ user }: NavigationProps) {
                     className="flex items-center space-x-2"
                   >
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+                      <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.name} />
                       <AvatarFallback>
-                        {user.name
+                        {currentUser.name
                           .split(" ")
                           .map((n) => n[0])
                           .join("")
                           .toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="hidden lg:block">{user.name}</span>
+                    <span className="hidden lg:block">{currentUser.name}</span>
                     <ChevronDown className="h-4 w-4" />
                   </Button>
 
@@ -156,9 +159,9 @@ export function Navigation({ user }: NavigationProps) {
                       <div className="p-4 border-b">
                         <div className="flex items-center space-x-3">
                           <Avatar className="h-10 w-10">
-                            <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+                            <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.name} />
                             <AvatarFallback>
-                              {user.name
+                              {currentUser.name
                                 .split(" ")
                                 .map((n) => n[0])
                                 .join("")
@@ -166,10 +169,10 @@ export function Navigation({ user }: NavigationProps) {
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <p className="font-medium text-foreground">{user.name}</p>
-                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                            <p className="font-medium text-foreground">{currentUser.name}</p>
+                            <p className="text-sm text-muted-foreground">{currentUser.email}</p>
                             <Badge variant="secondary" className="mt-1">
-                              {user.role === "admin" ? "Administrator" : "Customer"}
+                              {currentUser.role === "admin" ? "Administrator" : "Customer"}
                             </Badge>
                           </div>
                         </div>
@@ -177,31 +180,50 @@ export function Navigation({ user }: NavigationProps) {
 
                       <div className="p-2">
                         <div className="space-y-1">
-                          {getUserMenuItems().map((item) => (
+                          <Link
+                            href="/dashboard"
+                            onClick={() => setShowUserMenu(false)}
+                            className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
+                              isActive('/dashboard') ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
+                            }`}
+                          >
+                            <BarChart3 className="h-5 w-5" />
+                            <div className="flex-1">
+                              <p className="font-medium">Dashboard</p>
+                            </div>
+                          </Link>
+
+                          {currentUser?.role === 'admin' && (
                             <Link
-                              key={item.href}
-                              href={item.href}
+                              href="/admin-dashboard"
                               onClick={() => setShowUserMenu(false)}
                               className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
-                                isActive(item.href) 
-                                  ? "bg-primary/10 text-primary" 
-                                  : "hover:bg-muted"
+                                isActive('/admin-dashboard') ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
                               }`}
                             >
-                              <item.icon className="h-5 w-5" />
+                              <BarChart3 className="h-5 w-5" />
                               <div className="flex-1">
-                                <p className="font-medium">{item.label}</p>
-                                <p className="text-xs text-muted-foreground">{item.description}</p>
+                                <p className="font-medium">Admin Dashboard</p>
                               </div>
                             </Link>
-                          ))}
+                          )}
+
                         </div>
 
                         <div className="border-t mt-2 pt-2">
                           <Button
                             variant="ghost"
                             className="w-full justify-start"
-                            onClick={() => setShowUserMenu(false)}
+                            onClick={async () => {
+                              try {
+                                await fetch('/api/auth/logout', { method: 'POST' })
+                                setShowUserMenu(false)
+                                // reload so server-side layout reads cleared cookie
+                                window.location.href = '/'
+                              } catch (err) {
+                                console.warn('Failed to sign out', err)
+                              }
+                            }}
                           >
                             <LogOut className="h-4 w-4 mr-2" />
                             Sign Out
@@ -235,12 +257,12 @@ export function Navigation({ user }: NavigationProps) {
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                 <div className="flex flex-col space-y-4 mt-8">
                   {/* User Info */}
-                  {user && (
+                  {currentUser && (
                     <div className="flex items-center space-x-3 pb-4 border-b">
                       <Avatar className="h-10 w-10">
-                        <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+                        <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.name} />
                         <AvatarFallback>
-                          {user.name
+                          {currentUser.name
                             .split(" ")
                             .map((n) => n[0])
                             .join("")
@@ -248,8 +270,8 @@ export function Navigation({ user }: NavigationProps) {
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-medium text-foreground">{user.name}</p>
-                        <p className="text-sm text-muted-foreground">{user.email}</p>
+                        <p className="font-medium text-foreground">{currentUser.name}</p>
+                        <p className="text-sm text-muted-foreground">{currentUser.email}</p>
                       </div>
                     </div>
                   )}
@@ -270,36 +292,45 @@ export function Navigation({ user }: NavigationProps) {
                   ))}
 
                   {/* User Dashboard Menu */}
-                  {user && (
+                  {currentUser && (
                     <div className="pt-4 border-t">
                       <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide">
-                        {user.role === "admin" ? "Admin Panel" : "My Account"}
+                        {currentUser.role === "admin" ? "Admin Panel" : "My Account"}
                       </h3>
                       <div className="space-y-2">
-                        {getUserMenuItems().map((item) => (
                           <Link
-                            key={item.href}
-                            href={item.href}
+                            href="/dashboard"
                             onClick={() => setIsOpen(false)}
                             className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
-                              isActive(item.href) 
-                                ? "bg-primary/10 text-primary" 
-                                : "hover:bg-muted"
+                              isActive('/dashboard') ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
                             }`}
                           >
-                            <item.icon className="h-5 w-5" />
+                            <BarChart3 className="h-5 w-5" />
                             <div className="flex-1">
-                              <p className="font-medium">{item.label}</p>
-                              <p className="text-xs text-muted-foreground">{item.description}</p>
+                              <p className="font-medium">Dashboard</p>
                             </div>
                           </Link>
-                        ))}
-                      </div>
+
+                          {currentUser?.role === 'admin' && (
+                            <Link
+                              href="/admin-dashboard"
+                              onClick={() => setIsOpen(false)}
+                              className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
+                                isActive('/admin-dashboard') ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
+                              }`}
+                            >
+                              <BarChart3 className="h-5 w-5" />
+                              <div className="flex-1">
+                                <p className="font-medium">Admin Dashboard</p>
+                              </div>
+                            </Link>
+                          )}
+                        </div>
                     </div>
                   )}
 
                   {/* Auth Buttons */}
-                  {!user && (
+                  {!currentUser && (
                     <div className="flex flex-col space-y-2 pt-4 border-t">
                       <Button variant="outline" className="w-full bg-transparent" asChild>
                         <Link href="/login" onClick={() => setIsOpen(false)}>Sign In</Link>
@@ -310,19 +341,55 @@ export function Navigation({ user }: NavigationProps) {
                     </div>
                   )}
 
-                  {user && (
-                    <div className="flex flex-col space-y-2 pt-4 border-t">
-                      <Button variant="outline" className="w-full bg-transparent">
-                        <Bell className="h-4 w-4 mr-2" />
-                        Notifications
-                      </Button>
-                      <Button variant="outline" className="w-full bg-transparent">
-                        <User className="h-4 w-4 mr-2" />
-                        Profile Settings
-                      </Button>
-                      <Button variant="outline" className="w-full bg-transparent">
-                        Sign Out
-                      </Button>
+                  {currentUser && (
+                    <div className="pt-4 border-t">
+                      <div className="space-y-2">
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setIsOpen(false)}
+                          className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
+                            isActive('/dashboard') ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
+                          }`}
+                        >
+                          <BarChart3 className="h-5 w-5" />
+                          <div className="flex-1">
+                            <p className="font-medium">Dashboard</p>
+                          </div>
+                        </Link>
+
+                        {currentUser?.role === 'admin' && (
+                          <Link
+                            href="/admin-dashboard"
+                            onClick={() => setIsOpen(false)}
+                            className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
+                              isActive('/admin-dashboard') ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
+                            }`}
+                          >
+                            <BarChart3 className="h-5 w-5" />
+                            <div className="flex-1">
+                              <p className="font-medium">Admin Dashboard</p>
+                            </div>
+                          </Link>
+                        )}
+
+                        <div>
+                          <Button
+                            variant="outline"
+                            className="w-full bg-transparent"
+                            onClick={async () => {
+                              try {
+                                await fetch('/api/auth/logout', { method: 'POST' })
+                                setIsOpen(false)
+                                window.location.href = '/'
+                              } catch (err) {
+                                console.warn('Failed to sign out', err)
+                              }
+                            }}
+                          >
+                            Sign Out
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>

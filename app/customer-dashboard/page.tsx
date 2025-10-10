@@ -32,9 +32,12 @@ import {
   CreditCard,
   FileText,
   Heart,
-  Share2
+  Share2,
+  UserPlus,
+  Map,
+  PhoneCall
 } from "lucide-react"
-import { Navigation as NavComponent } from "@/components/navigation"
+// ...existing code...
 import { Footer } from "@/components/footer"
 import Link from "next/link"
 
@@ -132,6 +135,46 @@ const favoriteCars = [
   }
 ]
 
+// Emergency mock data (mirrors admin dashboard emergency UI)
+const emergencyContacts = [
+  {
+    id: 1,
+    customerName: "John Doe",
+    customerPhone: "+91 98765 43210",
+    emergencyContact: "Jane Doe (Wife)",
+    emergencyPhone: "+91 98765 43211",
+    relationship: "Spouse",
+    lastUpdated: "2024-01-15",
+    status: "active"
+  },
+  {
+    id: 2,
+    customerName: "Sarah Wilson",
+    customerPhone: "+91 98765 43212",
+    emergencyContact: "Mike Wilson (Brother)",
+    emergencyPhone: "+91 98765 43213",
+    relationship: "Sibling",
+    lastUpdated: "2024-01-14",
+    status: "active"
+  }
+]
+
+const activeBookings = [
+  {
+    id: "BK001",
+    customerName: "John Doe",
+    customerPhone: "+91 98765 43210",
+    carName: "BMW 3 Series",
+    startDate: "2024-01-20",
+    endDate: "2024-01-25",
+    currentLocation: "Downtown Office",
+    gpsCoordinates: { lat: 28.4595, lng: 77.0266 },
+    status: "active",
+    emergencyContact: "Jane Doe",
+    emergencyPhone: "+91 98765 43211"
+  }
+]
+
 const getStatusBadge = (status: string) => {
   switch (status) {
     case "confirmed":
@@ -153,7 +196,6 @@ export default function CustomerDashboard() {
 
   return (
     <>
-      <NavComponent />
       <div className="flex-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
@@ -226,12 +268,12 @@ export default function CustomerDashboard() {
           </div>
 
           {/* Main Content Tabs */}
-          <Tabs defaultValue="bookings" className="space-y-6">
+          <Tabs defaultValue="overview" className="space-y-6">
             <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="bookings">My Bookings</TabsTrigger>
-              <TabsTrigger value="favorites">Favorites</TabsTrigger>
-              <TabsTrigger value="history">History</TabsTrigger>
-              <TabsTrigger value="profile">Profile</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              <TabsTrigger value="emergency">Emergency</TabsTrigger>
             </TabsList>
 
             {/* My Bookings Tab */}
@@ -459,6 +501,87 @@ export default function CustomerDashboard() {
                     </CardContent>
                   </Card>
                 ))}
+              </div>
+            </TabsContent>
+
+            {/* Emergency Tab */}
+            <TabsContent value="emergency" className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-foreground">Emergency Contacts</h2>
+                <Button>
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Add Emergency Contact
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Emergency Contacts</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {emergencyContacts.map((contact) => (
+                        <div key={contact.id} className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="space-y-1">
+                            <p className="font-medium">{contact.customerName}</p>
+                            <p className="text-sm text-muted-foreground">{contact.customerPhone}</p>
+                            <p className="text-sm text-muted-foreground">Emergency: {contact.emergencyContact} ({contact.relationship})</p>
+                            <p className="text-xs text-muted-foreground">{contact.emergencyPhone}</p>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline">
+                              <Phone className="h-4 w-4 mr-1" />
+                              Call
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Active Bookings</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {activeBookings.map((booking) => (
+                        <div key={booking.id} className="p-4 border rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <div>
+                              <p className="font-medium">{booking.customerName}</p>
+                              <p className="text-sm text-muted-foreground">{booking.carName}</p>
+                            </div>
+                            <Badge className="bg-green-100 text-green-800">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Active
+                            </Badge>
+                          </div>
+                          <div className="space-y-1 text-sm text-muted-foreground">
+                            <p>Location: {booking.currentLocation}</p>
+                            <p>Period: {booking.startDate} - {booking.endDate}</p>
+                            <p>Emergency: {booking.emergencyContact} ({booking.emergencyPhone})</p>
+                          </div>
+                          <div className="flex gap-2 mt-3">
+                            <Button size="sm" variant="outline">
+                              <Map className="h-4 w-4 mr-1" />
+                              Track
+                            </Button>
+                            <Button size="sm" className="bg-red-500 hover:bg-red-600">
+                              <PhoneCall className="h-4 w-4 mr-1" />
+                              Emergency
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
 

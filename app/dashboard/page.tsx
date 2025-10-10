@@ -24,7 +24,6 @@ import {
   AlertCircle,
   CheckCircle
 } from "lucide-react"
-import { Navigation as NavComponent } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { DashboardSelector } from "@/components/dashboard-selector"
 import Link from "next/link"
@@ -130,7 +129,6 @@ export default function DashboardPage() {
 
   return (
     <>
-      <NavComponent user={user} />
       <div className="flex-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Dashboard Selector */}

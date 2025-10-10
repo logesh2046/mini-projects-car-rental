@@ -4,6 +4,8 @@ import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
+import { cookies } from 'next/headers'
+import { Navigation } from '@/components/navigation'
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -63,11 +65,33 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // Read server-side session cookie and parse user
+  let user = null
+  try {
+    const cookieStore = cookies()
+    const session = cookieStore.get('session')?.value
+    if (session) {
+      user = JSON.parse(session)
+    }
+  } catch (err) {
+    // ignore parse errors
+    user = null
+  }
+
+  // DEBUG: print parsed session for each server request (remove in production)
+  try {
+    // eslint-disable-next-line no-console
+    console.log('[layout] parsed session user=', user)
+  } catch (e) {}
+
   return (
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} antialiased`}>
         <Suspense fallback={<div>Loading...</div>}>
-          <div className="min-h-screen flex flex-col">{children}</div>
+          <div className="min-h-screen flex flex-col">
+            <Navigation user={user} />
+            {children}
+          </div>
         </Suspense>
         <Analytics />
       </body>
