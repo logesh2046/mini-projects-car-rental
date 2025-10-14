@@ -23,8 +23,9 @@ import {
   ChevronDown
 } from "lucide-react"
 import Link from "next/link"
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { usePathname } from "next/navigation"
+import { toast } from 'sonner'
 
 interface NavigationProps {
   user?: {
@@ -36,6 +37,7 @@ interface NavigationProps {
 }
 
 export function Navigation({ user }: NavigationProps) {
+  const { data: session } = useSession()
   const [isOpen, setIsOpen] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const pathname = usePathname()
@@ -55,8 +57,8 @@ export function Navigation({ user }: NavigationProps) {
     }
   }, [])
 
-  // `user` should be passed from the server layout (server component)
-  const currentUser = user ?? null
+  // Prefer client session user if available for instant UI updates after sign-in
+  const currentUser = (session?.user as any) ?? user ?? null
 
   const navItems = [
     { href: "/", label: "Home", icon: Home },
@@ -218,11 +220,11 @@ export function Navigation({ user }: NavigationProps) {
                             onClick={async () => {
                               try {
                                 setShowUserMenu(false)
-                                alert('logout')
+                                toast.success('Signed out successfully')
                                 await signOut({ callbackUrl: '/' })
                               } catch (err) {
                                 console.warn('Failed to sign out', err)
-                                // fallback to redirect
+                                toast.error('Sign out failed, redirecting home')
                                 window.location.href = '/'
                               }
                             }}
@@ -381,10 +383,11 @@ export function Navigation({ user }: NavigationProps) {
                             onClick={async () => {
                               try {
                                 setIsOpen(false)
-                                alert('logout')
+                                toast.success('Signed out successfully')
                                 await signOut({ callbackUrl: '/' })
                               } catch (err) {
                                 console.warn('Failed to sign out', err)
+                                toast.error('Sign out failed, redirecting home')
                                 window.location.href = '/'
                               }
                             }}

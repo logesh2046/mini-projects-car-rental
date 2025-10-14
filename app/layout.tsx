@@ -3,6 +3,8 @@ import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
+import { Toaster } from "sonner"
+import AuthSessionProvider from '@/components/session-provider'
 import { Suspense } from "react"
 import { cookies } from 'next/headers'
 import { Navigation } from '@/components/navigation'
@@ -89,13 +91,16 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} antialiased`}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <div className="min-h-screen flex flex-col">
-            <Navigation user={user as any} />
-            {children}
-          </div>
-        </Suspense>
+        <AuthSessionProvider>
+          <Suspense fallback={<div>Loading...</div>}>
+            <div className="min-h-screen flex flex-col">
+              <Navigation user={user as any} />
+              {children}
+            </div>
+          </Suspense>
+        </AuthSessionProvider>
         <Analytics />
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   )

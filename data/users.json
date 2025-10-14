@@ -45,5 +45,12 @@
     "name": "vignesh s",
     "passwordHash": "$2b$10$Xfu49A9Fm7zT9Su0nKIBCeSAE0A6cZCMTT5F1kl0.VGfmA5paq7XW",
     "role": "customer"
+  },
+  {
+    "id": "1760442650030",
+    "email": "devaaa@gmail.com",
+    "name": "Devaa MD",
+    "passwordHash": "$2b$10$.OdqpCkMdTzhHpcnu0apMu903BVoe0jYVMOjY5xVz7el0IFcc.Hwy",
+    "role": "admin"
   }
 ]

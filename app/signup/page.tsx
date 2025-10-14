@@ -12,6 +12,7 @@ import { Footer } from "@/components/footer"
 import { Eye, EyeOff, Mail, Lock, User, Phone, MapPin, Calendar } from "lucide-react"
 import Link from "next/link"
 import { signIn } from "next-auth/react"
+import { toast } from "sonner"
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -133,7 +134,6 @@ export default function SignUpPage() {
     e.preventDefault()
     
     if (validateForm()) {
-      // Handle form submission here
       ;(async () => {
         try {
           const res = await fetch('/api/auth/signup', {
@@ -149,27 +149,27 @@ export default function SignUpPage() {
           const json = await res.json()
           if (!res.ok) {
             if (res.status === 409) {
-              // user already exists -> show inline error near email
               setErrors(prev => ({ ...prev, email: json?.error || 'This email is already registered — please sign in or use another email.' }))
-              // focus email input
               const el = document.getElementById('email') as HTMLInputElement | null
               if (el) el.focus()
+              toast.error(json?.error || 'This email is already registered')
               return
             }
-            alert(json?.error || 'Signup failed')
+            toast.error(json?.error || 'Signup failed')
             return
           }
-          // auto sign-in via next-auth credentials
+          toast.success('Account created successfully')
           const signInResult = await signIn('credentials', { redirect: false, email: formData.email.toLowerCase(), password: formData.password })
           if (signInResult?.ok) {
-            alert('login in')
+            toast.success('Signed in successfully')
             window.location.href = '/'
+            try { window.location.reload() } catch (_) {}
           } else {
-            alert('Signup succeeded but sign-in failed')
+            toast.error('Signup succeeded but sign-in failed')
           }
         } catch (err) {
           console.error(err)
-          alert('Signup error')
+          toast.error('Signup error')
         }
       })()
     }

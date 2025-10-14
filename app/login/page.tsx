@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Footer } from "@/components/footer"
 import { Eye, EyeOff, Mail, Lock } from "lucide-react"
 import Link from "next/link"
+import { toast } from "sonner"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -49,22 +50,30 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    if (validateForm()) {
-      // Handle form submission here
-      console.log("Form submitted:", formData)
-      ;(async () => {
-        const res = await signIn('credentials', { redirect: false, email: formData.email.toLowerCase(), password: formData.password })
-        if (res?.ok) {
-          // notify parent that login happened
-          alert('login in')
-          window.location.href = '/'
-        } else {
-          alert('Invalid credentials')
-        }
-      })()
+
+    if (!validateForm()) return
+
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: formData.email.toLowerCase(),
+        password: formData.password,
+      })
+
+      if (result?.ok) {
+        toast.success('Signed in successfully')
+        router.replace('/')
+        router.refresh()
+      } else {
+        const message = result?.error || 'Invalid credentials'
+        setErrors(prev => ({ ...prev, password: message }))
+        toast.error(message)
+      }
+    } catch (err) {
+      setErrors(prev => ({ ...prev, password: 'Something went wrong. Please try again.' }))
+      toast.error('Something went wrong. Please try again.')
     }
   }
 

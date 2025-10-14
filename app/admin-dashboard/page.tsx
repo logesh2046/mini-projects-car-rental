@@ -38,7 +38,15 @@ import {
 } from "lucide-react"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
-import LeafletMap from "@/components/leaflet-map"
+import dynamic from "next/dynamic"
+const LeafletMap = dynamic(() => import("@/components/leaflet-map").then(m => m.default), {
+  ssr: false,
+  loading: () => (
+    <div className="h-96 flex items-center justify-center border rounded-lg bg-muted/30">
+      Loading map...
+    </div>
+  )
+})
 
 // Mock data for admin dashboard
 const stats = [
