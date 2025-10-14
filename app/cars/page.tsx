@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Car, Star, Users, Fuel, Settings, MapPin, Filter, Search } from "lucide-react"
 import Link from "next/link"
 import { Navigation } from "@/components/navigation"
+import { useSearchParams } from 'next/navigation'
 import { Footer } from "@/components/footer"
 
 const cars = [
@@ -112,6 +113,7 @@ const cars = [
 ]
 
 export default function CarsPage() {
+  const searchParams = useSearchParams()
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedType, setSelectedType] = useState("all")
   const [selectedTransmission, setSelectedTransmission] = useState("all")
@@ -119,15 +121,62 @@ export default function CarsPage() {
   const [priceRange, setPriceRange] = useState([0, 200])
   const [showFilters, setShowFilters] = useState(false)
 
+  useEffect(() => {
+    if (!searchParams) return
+    const pickup = searchParams.get('pickup')
+    const carType = searchParams.get('carType')
+    const pickupDate = searchParams.get('pickupDate')
+    const returnDate = searchParams.get('returnDate')
+    if (pickup) setSelectedLocation(pickup.toLowerCase())
+    if (carType) setSelectedType(carType.toLowerCase())
+    if (pickupDate) {
+      // set searchTerm to pickup date for visibility (optional)
+      setSearchTerm(prev => prev)
+    }
+    // returnDate currently unused in filtering but available for future
+  }, [searchParams])
+  // load bookings for availability check
+  // simple in-memory filter using data/bookings.json
+  const [bookings, setBookings] = useState<any[]>([])
+
+  useEffect(() => {
+    // load local json (bundled) - dynamic import
+    import('../../data/bookings.json').then(m => setBookings(m.default || m))
+  }, [])
+
   const filteredCars = cars.filter((car) => {
     const matchesSearch =
       car.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       car.type.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesType = selectedType === "all" || car.type.toLowerCase().includes(selectedType.toLowerCase())
+    const matchesType =
+      selectedType === "all" ||
+      selectedType === "" ||
+      car.type.toLowerCase().includes(selectedType.toLowerCase()) ||
+      // allow matching common labels
+      (selectedType.toLowerCase() === 'suv' && car.type.toLowerCase().includes('suv')) ||
+      (selectedType.toLowerCase() === 'luxury' && car.type.toLowerCase().includes('luxury'))
     const matchesTransmission =
       selectedTransmission === "all" || car.transmission.toLowerCase() === selectedTransmission
-    const matchesLocation = selectedLocation === "all" || car.location.toLowerCase() === selectedLocation.toLowerCase()
+    const matchesLocation =
+      selectedLocation === "all" ||
+      car.location.toLowerCase() === selectedLocation.toLowerCase() ||
+      (selectedLocation === '' )
     const matchesPrice = car.price >= priceRange[0] && car.price <= priceRange[1]
+
+    // if pickup/return provided, additionally ensure car isn't booked
+    const pickupDate = searchParams.get('pickupDate')
+    const returnDate = searchParams.get('returnDate')
+    if (pickupDate && returnDate) {
+      const p = new Date(pickupDate)
+      const r = new Date(returnDate)
+      const carBookings = bookings.filter(b => b.carId === car.id)
+      const conflict = carBookings.some(b => {
+        const from = new Date(b.from)
+        const to = new Date(b.to)
+        return p <= to && from <= r
+      })
+      if (conflict) return false
+    }
 
     return matchesSearch && matchesType && matchesTransmission && matchesLocation && matchesPrice
   })

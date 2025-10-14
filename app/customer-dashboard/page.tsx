@@ -40,6 +40,7 @@ import {
 // ...existing code...
 import { Footer } from "@/components/footer"
 import Link from "next/link"
+import LeafletMap from "@/components/leaflet-map"
 
 // Mock data for customer dashboard
 const userStats = {
@@ -275,6 +276,24 @@ export default function CustomerDashboard() {
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="emergency">Emergency</TabsTrigger>
             </TabsList>
+
+            {/* Overview Tab */}
+            <TabsContent value="overview" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Live Tracking</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-48">
+                      {/* show only customer's active bookings on the map */}
+                      {/* @ts-ignore */}
+                      <LeafletMap bookings={activeBookings} height="12rem" cluster={false} showLegend={true} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
 
             {/* My Bookings Tab */}
             <TabsContent value="bookings" className="space-y-6">

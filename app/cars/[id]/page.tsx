@@ -429,13 +429,19 @@ const similarCars = [
   },
 ]
 
+// Derive a TypeScript type for a car from the sample data to help typing below
+type CarType = typeof carData[1]
+
 export default function CarDetailsPage() {
   const params = useParams()
-  const carId = params.id as string
+  const carIdParam = params.id as string
+  // parse route param to number to avoid string -> numeric-union conversion warnings
+  const carId = Number(carIdParam)
   const [selectedImage, setSelectedImage] = useState(0)
   const [isFavorite, setIsFavorite] = useState(false)
 
-  const car = carData[carId as keyof typeof carData]
+  // index carData using a numeric key. Cast to Record<number, CarType> so mapped arrays are typed
+  const car = (carData as Record<number, CarType>)[carId]
 
   if (!car) {
     return (

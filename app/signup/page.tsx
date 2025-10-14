@@ -11,6 +11,7 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { Eye, EyeOff, Mail, Lock, User, Phone, MapPin, Calendar } from "lucide-react"
 import Link from "next/link"
+import { signIn } from "next-auth/react"
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -70,6 +71,21 @@ export default function SignUpPage() {
       newErrors.password = "Password is required"
     } else if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters long"
+    } else {
+      // Strong password policy:
+      // - first character must be an uppercase letter
+      // - must contain at least one lowercase letter
+      // - must contain at least one digit
+      // - must contain at least one special symbol
+      const pw = formData.password
+      const startsUpper = /^[A-Z]/.test(pw)
+      const hasLower = /[a-z]/.test(pw)
+      const hasDigit = /[0-9]/.test(pw)
+      const hasSymbol = /[^A-Za-z0-9]/.test(pw)
+      if (!startsUpper) newErrors.password = 'Password must start with an uppercase letter.'
+      else if (!hasLower) newErrors.password = 'Password must contain at least one lowercase letter.'
+      else if (!hasDigit) newErrors.password = 'Password must contain at least one digit.'
+      else if (!hasSymbol) newErrors.password = 'Password must contain at least one special character.'
     }
 
     if (!formData.confirmPassword) {
@@ -118,9 +134,44 @@ export default function SignUpPage() {
     
     if (validateForm()) {
       // Handle form submission here
-      console.log("Form submitted:", formData)
-      // You can add API call here to register the user
-      alert("Account created successfully! Please check your email for verification.")
+      ;(async () => {
+        try {
+          const res = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: formData.email.toLowerCase(),
+              name: `${formData.firstName} ${formData.lastName}`,
+              password: formData.password,
+              userType: formData.userType
+            })
+          })
+          const json = await res.json()
+          if (!res.ok) {
+            if (res.status === 409) {
+              // user already exists -> show inline error near email
+              setErrors(prev => ({ ...prev, email: json?.error || 'This email is already registered — please sign in or use another email.' }))
+              // focus email input
+              const el = document.getElementById('email') as HTMLInputElement | null
+              if (el) el.focus()
+              return
+            }
+            alert(json?.error || 'Signup failed')
+            return
+          }
+          // auto sign-in via next-auth credentials
+          const signInResult = await signIn('credentials', { redirect: false, email: formData.email.toLowerCase(), password: formData.password })
+          if (signInResult?.ok) {
+            alert('login in')
+            window.location.href = '/'
+          } else {
+            alert('Signup succeeded but sign-in failed')
+          }
+        } catch (err) {
+          console.error(err)
+          alert('Signup error')
+        }
+      })()
     }
   }
 

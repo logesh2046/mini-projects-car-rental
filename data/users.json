@@ -1,0 +1,49 @@
+[
+  {
+    "id": "1760351544503",
+    "email": "sabarish@gmail.com",
+    "name": "sabarish om",
+    "passwordHash": "$2b$10$XNhKqs1YCr6EfcIbqWUoOuLfMi247NtvAws14PA3.V5HXy5mvTot."
+  },
+  {
+    "id": "1760352296738",
+    "email": "aswin@gmail.com",
+    "name": "Aswin M",
+    "passwordHash": "$2b$10$4mLpfSQgPek8uhtRfAd5huuUjY7snNqQnw/0hqoQoDCBqhX3IsHi."
+  },
+  {
+    "id": "1760352815930",
+    "email": "devaa@gmail.com",
+    "name": "Devaa MD",
+    "passwordHash": "$2b$10$oN3UVeXonXRrbuW8MIRT2ulQZ.edTl.svs2hompzQFotrtHdJLrzi",
+    "role": "admin"
+  },
+  {
+    "id": "1760370135277",
+    "email": "vignesh@gmail.com",
+    "name": "vignesh s",
+    "passwordHash": "$2b$10$Wzethsyl5LXXcl4zWOpY4ecQXbr3aEPT4ZXH3CUBzUTMEmvCkGitS",
+    "role": "admin"
+  },
+  {
+    "id": "1760422411079",
+    "email": "dharanish@gmail.com",
+    "name": "dharanish s",
+    "passwordHash": "$2b$10$uhyq60xpFMF3FeqeGU.URukQafMZqFDmvyroZSlsN8HM4WvOh17/O",
+    "role": "admin"
+  },
+  {
+    "id": "1760433589150",
+    "email": "abey@gmail.com",
+    "name": "Abey M",
+    "passwordHash": "$2b$10$gEJRa4ESvXQ/P7kdJdHVMOwq/mzFwgH3Ajd2g.RGT8litDb.zJz0.",
+    "role": "admin"
+  },
+  {
+    "id": "1760433719098",
+    "email": "vigneshs@gmail.com",
+    "name": "vignesh s",
+    "passwordHash": "$2b$10$Xfu49A9Fm7zT9Su0nKIBCeSAE0A6cZCMTT5F1kl0.VGfmA5paq7XW",
+    "role": "customer"
+  }
+]

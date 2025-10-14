@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -54,27 +55,16 @@ export default function LoginPage() {
     if (validateForm()) {
       // Handle form submission here
       console.log("Form submitted:", formData)
-      // Call server login API which will set a server-side session cookie (mock)
-      fetch('/api/auth/login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email.toLowerCase() })
-      })
-        .then(res => res.json())
-        .then((data) => {
-          if (data && data.ok) {
-            // Perform a full reload to ensure the server reads the session cookie
-            // and renders the layout with the authenticated user.
-            window.location.href = '/'
-          } else {
-            alert(data?.error || 'Login failed')
-          }
-        })
-        .catch((err) => {
-          console.error(err)
-          alert('Login error')
-        })
+      ;(async () => {
+        const res = await signIn('credentials', { redirect: false, email: formData.email.toLowerCase(), password: formData.password })
+        if (res?.ok) {
+          // notify parent that login happened
+          alert('login in')
+          window.location.href = '/'
+        } else {
+          alert('Invalid credentials')
+        }
+      })()
     }
   }
 

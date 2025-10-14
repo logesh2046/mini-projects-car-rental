@@ -23,6 +23,7 @@ import {
   ChevronDown
 } from "lucide-react"
 import Link from "next/link"
+import { signOut } from 'next-auth/react'
 import { usePathname } from "next/navigation"
 
 interface NavigationProps {
@@ -216,12 +217,13 @@ export function Navigation({ user }: NavigationProps) {
                             className="w-full justify-start"
                             onClick={async () => {
                               try {
-                                await fetch('/api/auth/logout', { method: 'POST' })
                                 setShowUserMenu(false)
-                                // reload so server-side layout reads cleared cookie
-                                window.location.href = '/'
+                                alert('logout')
+                                await signOut({ callbackUrl: '/' })
                               } catch (err) {
                                 console.warn('Failed to sign out', err)
+                                // fallback to redirect
+                                window.location.href = '/'
                               }
                             }}
                           >
@@ -378,11 +380,12 @@ export function Navigation({ user }: NavigationProps) {
                             className="w-full bg-transparent"
                             onClick={async () => {
                               try {
-                                await fetch('/api/auth/logout', { method: 'POST' })
                                 setIsOpen(false)
-                                window.location.href = '/'
+                                alert('logout')
+                                await signOut({ callbackUrl: '/' })
                               } catch (err) {
                                 console.warn('Failed to sign out', err)
+                                window.location.href = '/'
                               }
                             }}
                           >

@@ -1,9 +1,18 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Calendar, MapPin, Users, Star, Shield, Clock } from "lucide-react"
 import { Navigation } from "@/components/navigation"
+import dynamic from "next/dynamic"
+const SearchForm = dynamic(() => import("@/components/search-form"), { ssr: false })
+const Carousel = dynamic(() => import("@/components/carousel"), { ssr: false })
 import { Footer } from "@/components/footer"
 import Link from "next/link"
 
@@ -12,77 +21,37 @@ export default function HomePage() {
     <>
       <div className="flex-1">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-primary/5 to-accent/5 py-20 lg:py-32">
+        <section className="relative bg-gradient-to-br from-primary/5 to-accent/5 py-20 lg:py-28">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="space-y-8">
-                <div className="space-y-4">
-                  <h1 className="text-4xl lg:text-6xl font-bold text-foreground leading-tight text-balance">
-                    Find Your Perfect <span className="text-primary">Rental Car</span>
-                  </h1>
-                  <p className="text-lg text-muted-foreground text-pretty">
-                    Discover the best car rental deals with our premium fleet. Book now and drive with confidence.
-                  </p>
-                </div>
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              {/* Left Side */}
+              <div className="text-left">
+                <h1 className="text-5xl md:text-6xl font-extrabold text-foreground leading-tight mb-4">
+                  Find Your Perfect
+                  <br />
+                  <span className="text-primary">Rental Car</span>
+                </h1>
+                <p className="text-lg text-muted-foreground max-w-md mb-10">
+                  Discover the best car rental deals with our premium fleet. Book now and drive with confidence.
+                </p>
 
-                {/* Search Form */}
-                <Card className="p-6 shadow-lg">
-                  <CardContent className="p-0">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">Pick-up Location</label>
-                        <div className="relative">
-                          <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                          <Input placeholder="Enter location" className="pl-10" />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">Pick-up Date</label>
-                        <div className="relative">
-                          <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                          <Input type="date" className="pl-10" />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">Return Date</label>
-                        <div className="relative">
-                          <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                          <Input type="date" className="pl-10" />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">Car Type</label>
-                        <Select>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="economy">Economy</SelectItem>
-                            <SelectItem value="compact">Compact</SelectItem>
-                            <SelectItem value="midsize">Midsize</SelectItem>
-                            <SelectItem value="luxury">Luxury</SelectItem>
-                            <SelectItem value="suv">SUV</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <Button className="w-full mt-6" size="lg">
-                      Search Available Cars
-                    </Button>
-                  </CardContent>
-                </Card>
+                {/* Search Form Container */}
+                <div className="bg-white/90 p-6 rounded-2xl shadow-lg">
+                  {/* reuse existing SearchForm (client component) */}
+                  {/* eslint-disable-next-line @next/next/no-async-client-components */}
+                  <SearchForm />
+                </div>
               </div>
 
-              <div className="relative">
-                <div className="relative z-10">
+              {/* Right Side Image */}
+              <div className="flex justify-center lg:justify-end">
+                <div className="w-full max-w-md xl:max-w-lg rounded-2xl overflow-hidden shadow-2xl">
                   <img
-                    src="/modern-luxury-car-side-view-silver.jpg"
-                    alt="Luxury rental car"
-                    className="w-full h-auto rounded-lg shadow-2xl"
+                    src="/bmw-3-series-luxury-sedan.jpg"
+                    alt="Luxury Sedan"
+                    className="w-full h-[450px] lg:h-[520px] object-cover"
                   />
                 </div>
-                <div className="absolute -top-4 -right-4 w-72 h-72 bg-primary/10 rounded-full blur-3xl"></div>
-                <div className="absolute -bottom-4 -left-4 w-72 h-72 bg-accent/10 rounded-full blur-3xl"></div>
               </div>
             </div>
           </div>
@@ -144,7 +113,10 @@ export default function HomePage() {
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {car.features.map((feature, idx) => (
-                          <span key={idx} className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full">
+                          <span
+                            key={idx}
+                            className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full"
+                          >
                             {feature}
                           </span>
                         ))}
@@ -172,7 +144,7 @@ export default function HomePage() {
             <div className="text-center mb-12">
               <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Why Choose CarRental?</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                We provide the best car rental experience with premium service and competitive prices
+                We provide the best car rental experience with premium service and competitive prices.
               </p>
             </div>
 
@@ -181,7 +153,8 @@ export default function HomePage() {
                 {
                   icon: Shield,
                   title: "Fully Insured",
-                  description: "All our vehicles come with comprehensive insurance coverage for your peace of mind.",
+                  description:
+                    "All our vehicles come with comprehensive insurance coverage for your peace of mind.",
                 },
                 {
                   icon: Clock,
@@ -191,15 +164,21 @@ export default function HomePage() {
                 {
                   icon: Users,
                   title: "Best Prices",
-                  description: "Competitive pricing with no hidden fees. Get the best value for your money.",
+                  description:
+                    "Competitive pricing with no hidden fees. Get the best value for your money.",
                 },
               ].map((feature, index) => (
-                <Card key={index} className="text-center p-8 hover:shadow-lg transition-shadow">
+                <Card
+                  key={index}
+                  className="text-center p-8 hover:shadow-lg transition-shadow"
+                >
                   <CardContent className="p-0">
                     <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                       <feature.icon className="h-8 w-8 text-primary" />
                     </div>
-                    <h3 className="text-xl font-semibold text-foreground mb-2">{feature.title}</h3>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">
+                      {feature.title}
+                    </h3>
                     <p className="text-muted-foreground">{feature.description}</p>
                   </CardContent>
                 </Card>
@@ -208,6 +187,7 @@ export default function HomePage() {
           </div>
         </section>
       </div>
+
       <Footer />
     </>
   )

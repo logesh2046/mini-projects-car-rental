@@ -38,6 +38,7 @@ import {
 } from "lucide-react"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
+import LeafletMap from "@/components/leaflet-map"
 
 // Mock data for admin dashboard
 const stats = [
@@ -592,14 +593,10 @@ export default function AdminDashboard() {
                       <CardTitle>Live Tracking Map</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="h-96 bg-muted rounded-lg flex items-center justify-center">
-                        <div className="text-center">
-                          <Map className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                          <p className="text-muted-foreground">Google Maps Integration</p>
-                          <p className="text-sm text-muted-foreground">
-                            Real-time GPS tracking of all active vehicles
-                          </p>
-                        </div>
+                      {/* Replaced placeholder with Leaflet map */}
+                      <div className="h-96">
+                        {/* @ts-ignore */}
+                        <LeafletMap bookings={activeBookings} height="24rem" />
                       </div>
                     </CardContent>
                   </Card>

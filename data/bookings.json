@@ -1,0 +1,16 @@
+[
+  {
+    "id": "b1",
+    "carId": 1,
+    "userEmail": "alice@example.com",
+    "from": "2025-10-20",
+    "to": "2025-10-25"
+  },
+  {
+    "id": "b2",
+    "carId": 2,
+    "userEmail": "bob@example.com",
+    "from": "2025-10-22",
+    "to": "2025-10-23"
+  }
+]
