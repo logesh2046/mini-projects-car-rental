@@ -18,13 +18,15 @@ const inputVariants = cva(
   }
 )
 
-function Input({ className, type, size, ...props }: React.ComponentProps<"input"> & VariantProps<typeof inputVariants>) {
+type InputUiSize = NonNullable<VariantProps<typeof inputVariants>["size"]>
+
+function Input({ className, type, uiSize, ...props }: Omit<React.ComponentProps<"input">, "size"> & { uiSize?: InputUiSize } & VariantProps<typeof inputVariants>) {
   return (
     <input
       type={type}
       data-slot="input"
       className={cn(
-        inputVariants({ size, className }),
+        inputVariants({ size: uiSize, className }),
         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
       )}

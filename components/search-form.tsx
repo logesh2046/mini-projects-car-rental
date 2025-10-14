@@ -52,11 +52,11 @@ export default function SearchForm() {
           </div>
           <div>
             <label className="block text-sm md:text-base font-medium text-foreground mb-1">Pick-up Date</label>
-            <Input size="lg" type="date" value={pickupDate} onChange={(e) => setPickupDate(e.target.value)} />
+            <Input uiSize="lg" type="date" value={pickupDate} onChange={(e) => setPickupDate(e.target.value)} />
           </div>
           <div>
             <label className="block text-sm md:text-base font-medium text-foreground mb-1">Return Date</label>
-            <Input size="lg" type="date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)} />
+            <Input uiSize="lg" type="date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)} />
           </div>
           <div>
             <label className="block text-sm md:text-base font-medium text-foreground mb-1">Car Type</label>

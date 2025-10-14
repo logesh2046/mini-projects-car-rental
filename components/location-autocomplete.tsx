@@ -67,7 +67,7 @@ export default function LocationAutocomplete({ value, onChange, onSelect, sugges
       <Input
         placeholder="Enter location"
         className={className}
-        size={size}
+        uiSize={size}
         value={value}
         onChange={(e) => { onChange(e.target.value); setOpen(true) }}
         onFocus={() => setOpen(true)}
