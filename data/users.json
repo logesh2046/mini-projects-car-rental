@@ -52,5 +52,19 @@
     "name": "Devaa MD",
     "passwordHash": "$2b$10$.OdqpCkMdTzhHpcnu0apMu903BVoe0jYVMOjY5xVz7el0IFcc.Hwy",
     "role": "admin"
+  },
+  {
+    "id": "1760453324199",
+    "email": "guru@ail.com",
+    "name": "Guru G",
+    "passwordHash": "$2b$10$twjrNQG1h6wxnT3X1IMpZesBZCjqmJdfTAgTUaGrH2LcvEirFpGpe",
+    "role": "customer"
+  },
+  {
+    "id": "1760453527419",
+    "email": "logesh2046@gmail.com",
+    "name": "LOGESH G  G",
+    "passwordHash": "$2b$10$UU7N5jny04/ESEH3rurofe4/.hcBt6XX1eH972k/EA9JWx/zibKke",
+    "role": "customer"
   }
 ]

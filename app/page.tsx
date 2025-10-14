@@ -47,9 +47,11 @@ export default function HomePage() {
               <div className="flex justify-center lg:justify-end">
                 <div className="w-full max-w-md xl:max-w-lg rounded-2xl overflow-hidden shadow-2xl">
                   <img
-                    src="/bmw-3-series-luxury-sedan.jpg"
-                    alt="Luxury Sedan"
-                    className="w-full h-[450px] lg:h-[520px] object-cover"
+                   
+                    src="/modern-luxury-car-side-view-silver.jpg"
+                    alt="Luxury rental car"
+                    className="w-full h-auto rounded-lg shadow-2xl"
+                  
                   />
                 </div>
               </div>

@@ -55,6 +55,7 @@ const carData = {
       fuelType: "Petrol",
       year: "2023",
     },
+    odometerSuggestionKm: 12345.6,
   },
   2: {
     id: 2,
@@ -73,6 +74,7 @@ const carData = {
       fuelType: "Hybrid",
       year: "2023",
     },
+    odometerSuggestionKm: 22543.2,
   },
   3: {
     id: 3,
@@ -91,6 +93,7 @@ const carData = {
       fuelType: "Petrol",
       year: "2023",
     },
+    odometerSuggestionKm: 7832.4,
   },
   4: {
     id: 4,
@@ -109,6 +112,7 @@ const carData = {
       fuelType: "Petrol",
       year: "2023",
     },
+    odometerSuggestionKm: 34567.8,
   },
   5: {
     id: 5,
@@ -127,6 +131,7 @@ const carData = {
       fuelType: "Petrol",
       year: "2023",
     },
+    odometerSuggestionKm: 15678.9,
   },
   6: {
     id: 6,
@@ -145,6 +150,7 @@ const carData = {
       fuelType: "Petrol",
       year: "2023",
     },
+    odometerSuggestionKm: 28950.1,
   },
 }
 
@@ -346,6 +352,16 @@ export default function BookingPage() {
   const distanceKm = Math.max(0, isNaN(returnKmCalc - pickupKmCalc) ? 0 : (returnKmCalc - pickupKmCalc))
   const distanceCost = Math.max(0, isNaN(distanceKm * perKmCalc) ? 0 : distanceKm * perKmCalc)
   const totalCost = basePrice + insuranceCost + distanceCost
+
+  const fmtDateTime = (dateStr: string, timeStr: string) => {
+    if (!dateStr) return "--"
+    const d = new Date(`${dateStr}T${timeStr || '00:00'}`)
+    if (isNaN(d.getTime())) return "--"
+    return d.toLocaleString(undefined, {
+      year: 'numeric', month: 'short', day: '2-digit',
+      hour: '2-digit', minute: '2-digit'
+    })
+  }
 
   return (
     <>
@@ -1066,6 +1082,9 @@ export default function BookingPage() {
                           <span className="ml-1 text-sm">{car.rating}</span>
                           <span className="text-xs text-muted-foreground ml-1">({car.reviews})</span>
                             </div>
+                        {typeof (car as any).odometerSuggestionKm !== 'undefined' && (
+                          <p className="text-xs text-muted-foreground mt-1">Suggested pickup km: {(car as any).odometerSuggestionKm}</p>
+                        )}
                           </div>
                         </div>
 
@@ -1104,6 +1123,10 @@ export default function BookingPage() {
                       <span>Base rate ({rentalDays} days)</span>
                       <span>₹{basePrice}</span>
                             </div>
+                    <div className="text-xs text-muted-foreground">
+                      <div>Pickup: {fmtDateTime(formData.pickupDate, formData.pickupTime)}</div>
+                      <div>Return: {fmtDateTime(formData.returnDate, formData.returnTime)}</div>
+                    </div>
                     <div className="flex justify-between">
                       <span>Distance charge ({distanceKm} km @ ₹{isNaN(perKmCalc) ? 0 : perKmCalc}/km)</span>
                       <span>₹{distanceCost}</span>
