@@ -66,5 +66,12 @@
     "name": "LOGESH G  G",
     "passwordHash": "$2b$10$UU7N5jny04/ESEH3rurofe4/.hcBt6XX1eH972k/EA9JWx/zibKke",
     "role": "customer"
+  },
+  {
+    "id": "1761280338520",
+    "email": "mouna@gmail.co",
+    "name": "mouna sri",
+    "passwordHash": "$2b$10$LpAOTtXlanHbfX.iZUgsSODhyFxGQ7pR1Ll9Zf0PHDzcyGD35Iqru",
+    "role": "customer"
   }
 ]

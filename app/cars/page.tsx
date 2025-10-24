@@ -18,8 +18,8 @@ const cars = [
     id: 1,
     name: "BMW 3 Series",
     type: "Luxury Sedan",
-    price: 89,
-    originalPrice: 99,
+    price: 4500,
+    originalPrice: 5500,
     image: "/bmw-3-series-luxury-sedan.jpg",
     rating: 4.8,
     reviews: 124,
@@ -34,12 +34,12 @@ const cars = [
     id: 2,
     name: "Toyota Camry",
     type: "Midsize Sedan",
-    price: 59,
-    originalPrice: 69,
+    price: 3200,
+    originalPrice: 3800,
     image: "/toyota-camry-midsize-sedan.jpg",
     rating: 4.6,
     reviews: 89,
-    features: ["Automatic", "5 Seats", "Fuel Efficient", "Bluetooth"],
+    features: ["Automatic", "5 Seats", "Fuel Efficient", "Bluetooth","Sunroof","GPS"],
     fuel: "Hybrid",
     transmission: "Automatic",
     seats: 5,
@@ -50,8 +50,8 @@ const cars = [
     id: 3,
     name: "Range Rover Sport",
     type: "Luxury SUV",
-    price: 149,
-    originalPrice: 169,
+    price: 8500,
+    originalPrice: 9500,
     image: "/range-rover-sport-luxury-suv.jpg",
     rating: 4.9,
     reviews: 156,
@@ -66,8 +66,8 @@ const cars = [
     id: 4,
     name: "Honda Civic",
     type: "Compact Car",
-    price: 45,
-    originalPrice: 55,
+    price: 2200,
+    originalPrice: 2800,
     image: "/honda-civic-compact-car.png",
     rating: 4.4,
     reviews: 67,
@@ -82,8 +82,8 @@ const cars = [
     id: 5,
     name: "Mercedes C-Class",
     type: "Luxury Sedan",
-    price: 95,
-    originalPrice: 110,
+    price: 5500,
+    originalPrice: 6500,
     image: "/mercedes-c-class-luxury-sedan.jpg",
     rating: 4.7,
     reviews: 98,
@@ -98,8 +98,8 @@ const cars = [
     id: 6,
     name: "Ford Explorer",
     type: "SUV",
-    price: 79,
-    originalPrice: 89,
+    price: 3800,
+    originalPrice: 4500,
     image: "/ford-explorer-suv.png",
     rating: 4.5,
     reviews: 112,
@@ -118,7 +118,7 @@ export default function CarsPage() {
   const [selectedType, setSelectedType] = useState("all")
   const [selectedTransmission, setSelectedTransmission] = useState("all")
   const [selectedLocation, setSelectedLocation] = useState("all")
-  const [priceRange, setPriceRange] = useState([0, 200])
+  const [priceRange, setPriceRange] = useState([2000, 10000])
   const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
@@ -266,9 +266,9 @@ export default function CarsPage() {
                       <Slider
                         value={priceRange}
                         onValueChange={setPriceRange}
-                        max={200}
-                        min={0}
-                        step={10}
+                        max={10000}
+                        min={2000}
+                        step={500}
                         className="w-full"
                       />
                     </div>
@@ -352,21 +352,26 @@ export default function CarsPage() {
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl font-bold text-primary">₹{car.price}</span>
-                          <span className="text-muted-foreground">/day</span>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-lg font-bold text-primary">₹{car.price}</span>
+                          <span className="text-sm text-muted-foreground">/day</span>
                           {car.originalPrice > car.price && (
-                            <span className="text-sm text-muted-foreground line-through">₹{car.originalPrice}</span>
+                            <span className="text-xs text-muted-foreground line-through">₹{car.originalPrice}</span>
                           )}
                         </div>
+                        {car.originalPrice > car.price && (
+                          <p className="text-xs text-green-600 font-medium">
+                            Save ₹{car.originalPrice - car.price}
+                          </p>
+                        )}
                       </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm" asChild>
+                      <div className="flex flex-col gap-2">
+                        <Button variant="outline" size="sm" className="w-full" asChild>
                           <Link href={`/cars/${car.id}`}>View Details</Link>
                         </Button>
-                        <Button size="sm" disabled={!car.available} asChild={car.available}>
+                        <Button size="sm" className="w-full" disabled={!car.available} asChild={car.available}>
                           {car.available ? <Link href={`/booking/${car.id}`}>Book Now</Link> : "Unavailable"}
                         </Button>
                       </div>
