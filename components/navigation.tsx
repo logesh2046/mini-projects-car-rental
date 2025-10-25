@@ -147,7 +147,7 @@ export function Navigation({ user }: NavigationProps) {
                       <AvatarFallback>
                         {currentUser.name
                           .split(" ")
-                          .map((n) => n[0])
+                          .map((n: string) => n[0])
                           .join("")
                           .toUpperCase()}
                       </AvatarFallback>
@@ -166,7 +166,7 @@ export function Navigation({ user }: NavigationProps) {
                             <AvatarFallback>
                               {currentUser.name
                                 .split(" ")
-                                .map((n) => n[0])
+                                .map((n: string) => n[0])
                                 .join("")
                                 .toUpperCase()}
                             </AvatarFallback>
@@ -268,7 +268,7 @@ export function Navigation({ user }: NavigationProps) {
                         <AvatarFallback>
                           {currentUser.name
                             .split(" ")
-                            .map((n) => n[0])
+                            .map((n: string) => n[0])
                             .join("")
                             .toUpperCase()}
                         </AvatarFallback>
